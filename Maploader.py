@@ -1,5 +1,6 @@
 import discord
 from os import walk
+import requests
 
 TOKENFILE = open('TOKEN.txt', 'r')
 
@@ -34,6 +35,11 @@ async def on_message(message):
             filelist.extend(filenames)
             break
         await channel.send(filelist)
+    elif message.content.startswith('https://cdn.discordapp.com/attachments') and message.content[-4:] == '.w3x':
+        channel = message.channel
+        map = requests.get(message.content, allow_redirects=True)
+        open('./maps/' + message.content.rsplit('/',1)[-1], 'wb').write(map.content)
+        await channel.send('Map uploaded')
     else:
         return
     
